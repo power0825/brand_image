@@ -25,10 +25,10 @@ in the client bundle.
 3. Set project environment variables:
    - `DASHSCOPE_API_KEY` — Aliyun Model Studio
    - `ARK_IMAGE_API_KEY` — Volcengine Ark
-   - optional `DEMO_ACCESS_TOKEN` + build env `VITE_ACCESS_TOKEN` (same value) — shared-token gate so random visitors can't burn your quota
+   - `DEMO_ACCESS_TOKEN` + build env `VITE_ACCESS_TOKEN` (same value) — required shared-token gate so random visitors can't burn your quota
 4. Redeploy. Every team opens the URL, uses your keys server-side, no setup.
 
-> Why teams won't see each other's data: the site has **no server-side state** and stores everything in
+> The proxy stays disabled until both token variables are configured. This prevents an accidental public relay from consuming provider quota.`n>`n> Why teams won't see each other's data: the site has **no server-side state** and stores everything in
 > each browser's `localStorage` (per-device). Separate computers = fully isolated. The only shared resources
 > are the two API accounts (rate-limited) and, if you see teams sharing one browser, local project data —
 > use `New` or Import/Export JSON to separate projects.
