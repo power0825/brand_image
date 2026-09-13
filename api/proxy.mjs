@@ -18,6 +18,8 @@ const UPSTREAMS = {
   },
 }
 
+// Public deployments must always have an access token. Without this guard a
+// Vercel-held provider key would be exposed through an unauthenticated relay.
 const DEMO_TOKEN = process.env.DEMO_ACCESS_TOKEN || ''
 
 function json(res, status, obj) {
@@ -43,7 +45,10 @@ export default async function handler(req, res) {
     return json(res, 400, { error: 'unknown proxy kind' })
   }
 
-  // Optional shared access token guard: if DEMO_ACCESS_TOKEN is set, requests must carry it.
+  // Require the shared access token on every public deployment.
+  if (!DEMO_TOKEN) {
+    return json(res, 503, { error: 'proxy is not configured: set DEMO_ACCESS_TOKEN' })
+  }
   const bearer = (req.headers['authorization'] || '').replace(/^Bearer\s+/i, '')
   if (DEMO_TOKEN && bearer !== DEMO_TOKEN && (req.headers['x-access-token'] || '') !== DEMO_TOKEN) {
     return json(res, 401, { error: 'unauthorized: missing or wrong access token' })
