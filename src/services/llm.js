@@ -39,6 +39,18 @@ export function parseJson(raw) {
   throw new Error('Model did not return valid JSON: ' + t.slice(0, 160))
 }
 
+async function request(url, options) {
+  try {
+    return await fetch(url, options)
+  } catch (e) {
+    const message = String((e && e.message) || e)
+    if (/failed to fetch|networkerror|cors/i.test(message)) {
+      throw new Error('Browser direct request was blocked by CORS. Turn off Mode B and use the Vercel proxy (Mode A); configure DEMO_ACCESS_TOKEN, VITE_ACCESS_TOKEN, and DASHSCOPE_API_KEY in Vercel.')
+    }
+    throw e
+  }
+}
+
 export async function chat({ system, user, json = true, maxTokens = MAX_TOKENS }) {
   const c = cfg()
   const body = {
@@ -51,7 +63,7 @@ export async function chat({ system, user, json = true, maxTokens = MAX_TOKENS }
   }
   if (json) body.response_format = { type: 'json_object' }
 
-  const res = await fetch(`${base()}/chat/completions`, {
+  const res = await request(`${base()}/chat/completions`, {
     method: 'POST',
     headers: authHeaders(),
     body: JSON.stringify(body),
@@ -143,7 +155,7 @@ export async function testLLM() {
     messages: [{ role: 'user', content: 'Reply with exactly: OK' }],
     max_tokens: 16,
   }
-  const res = await fetch(`${base()}/chat/completions`, {
+  const res = await request(`${base()}/chat/completions`, {
     method: 'POST',
     headers: authHeaders(),
     body: JSON.stringify(body),

@@ -61,11 +61,11 @@ export default function ApiConfigModal({ open, onClose }) {
               checked={d.direct}
               onChange={(e) => set({ direct: e.target.checked })}
             />
-            Mode B: direct browser calls (needs keys below, and provider must allow CORS). Off = Mode A local proxy, keys from .env.local / Vercel env.
+            Mode B: direct browser calls (only providers that allow CORS). Model Studio text requests are blocked by browser CORS. Off = Mode A proxy, keys from .env.local / Vercel env.
           </label>
         </Labelled>
 
-        <Labelled label="Access token (optional — for the public Vercel proxy, set to the same value as its DEMO_ACCESS_TOKEN)">
+        <Labelled label="Access token (required for the public Vercel proxy — use the same value as DEMO_ACCESS_TOKEN)">
           <input className="input" value={d.accessToken} onChange={(e) => set({ accessToken: e.target.value })} placeholder="" />
         </Labelled>
 
@@ -96,8 +96,7 @@ export default function ApiConfigModal({ open, onClose }) {
         )}
         {d.direct && (
           <p className="hint" style={{ color: 'var(--warm)' }}>
-            Warning (Mode B): keys entered here are saved to this browser's localStorage and sent as headers from the
-            page. Use only on a machine you trust, never on a public deployment.
+            Warning (Mode B): keys entered here are saved to this browser's localStorage and sent as headers from the page. Model Studio text calls do not allow browser CORS, so text tests will fail in this mode. Use Mode A on Vercel after configuring its proxy environment variables.
           </p>
         )}
 
