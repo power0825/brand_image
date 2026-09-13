@@ -1,0 +1,3 @@
+.env*
+.vercelignore
+probe-ark.mjs

@@ -1,0 +1,9 @@
+# env（密钥绝不入库）
+.env
+.env.*
+!.env.example
+
+# 依赖与构建
+node_modules/
+dist/
+*.local

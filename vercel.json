@@ -1,0 +1,11 @@
+{
+  "buildCommand": "npm run build",
+  "outputDirectory": "dist",
+  "rewrites": [
+    { "source": "/v1/:path*", "destination": "/api/proxy?kind=llm&p=:path*" },
+    { "source": "/ark/:path*", "destination": "/api/proxy?kind=image&p=:path*" }
+  ],
+  "functions": {
+    "api/proxy.mjs": { "maxDuration": 60 }
+  }
+}
