@@ -38,7 +38,7 @@ export default function ApiConfigModal({ open, onClose }) {
   return (
     <div className="modal-back" onClick={onClose}>
       <div className="modal" onClick={(e) => e.stopPropagation()}>
-        <h3>Connections — Model Studio (text) · Volcengine Ark (image)</h3>
+        <h3>Connections — Volcengine Ark (text + image)</h3>
         <div className="row">
           <Labelled label="Text model">
             <input className="input" value={d.textModel} onChange={(e) => set({ textModel: e.target.value })} />
@@ -61,7 +61,7 @@ export default function ApiConfigModal({ open, onClose }) {
               checked={d.direct}
               onChange={(e) => set({ direct: e.target.checked })}
             />
-            Mode B: direct browser calls (only providers that allow CORS). Model Studio text requests are blocked by browser CORS. Off = Mode A proxy, keys from .env.local / Vercel env.
+            Mode B: direct browser calls using each user's own Ark key. Off = Mode A server proxy, keys from .env.local / Vercel env.
           </label>
         </Labelled>
 
@@ -96,7 +96,7 @@ export default function ApiConfigModal({ open, onClose }) {
         )}
         {d.direct && (
           <p className="hint" style={{ color: 'var(--warm)' }}>
-            Warning (Mode B): keys entered here are saved to this browser's localStorage and sent as headers from the page. Model Studio text calls do not allow browser CORS, so text tests will fail in this mode. Use Mode A on Vercel after configuring its proxy environment variables.
+            Warning (Mode B): keys entered here are saved to this browser's localStorage and sent as headers from the page. Use only on a trusted machine; never publish these keys in a public deployment.
           </p>
         )}
 

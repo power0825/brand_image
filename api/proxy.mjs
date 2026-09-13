@@ -9,8 +9,8 @@
  */
 const UPSTREAMS = {
   llm: {
-    base: process.env.OPENAI_BASE_URL || 'https://ws-45mqrzn3org3r0jc.ap-southeast-1.maas.aliyuncs.com/compatible-mode/v1',
-    key: process.env.DASHSCOPE_API_KEY || '',
+    base: process.env.OPENAI_BASE_URL || 'https://ark.cn-beijing.volces.com/api/v3',
+    key: process.env.ARK_TEXT_API_KEY || process.env.ARK_IMAGE_API_KEY || process.env.DASHSCOPE_API_KEY || '',
   },
   image: {
     base: process.env.ARK_BASE_URL || 'https://ark.cn-beijing.volces.com/api/v3',

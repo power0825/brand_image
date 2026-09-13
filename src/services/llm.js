@@ -45,7 +45,7 @@ async function request(url, options) {
   } catch (e) {
     const message = String((e && e.message) || e)
     if (/failed to fetch|networkerror|cors/i.test(message)) {
-      throw new Error('Browser direct request was blocked by CORS. Turn off Mode B and use the Vercel proxy (Mode A); configure DEMO_ACCESS_TOKEN, VITE_ACCESS_TOKEN, and DASHSCOPE_API_KEY in Vercel.')
+      throw new Error('Browser direct request was blocked by CORS. Verify the Ark endpoint and browser origin, or switch to Mode A server proxy.')
     }
     throw e
   }

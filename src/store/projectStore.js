@@ -2,14 +2,14 @@ import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 
 const DEFAULT_API = {
-  textModel: import.meta.env.VITE_TEXT_MODEL || 'qwen3.7-flash',
+  textModel: import.meta.env.VITE_TEXT_MODEL || 'doubao-seed-2-0-mini-260215',
   imageModel: import.meta.env.VITE_IMAGE_MODEL || 'doubao-seedream-4-5-251128',
   openAiBase:
     import.meta.env.VITE_OPENAI_BASE_URL ||
-    'https://ws-45mqrzn3org3r0jc.ap-southeast-1.maas.aliyuncs.com/compatible-mode/v1',
+    'https://ark.cn-beijing.volces.com/api/v3',
   arkBase: import.meta.env.VITE_ARK_BASE_URL || 'https://ark.cn-beijing.volces.com/api/v3',
-  accessToken: import.meta.env.VITE_ACCESS_TOKEN || '', // 公网代理可选共享口令（与 Vercel DEMO_ACCESS_TOKEN 相同）
-  direct: false, // false = Mode A（走本地代理，key 在 .env.local）；true = Mode B（直连 + 面板填 key）
+  accessToken: import.meta.env.VITE_ACCESS_TOKEN || '', // Mode A 代理口令；Mode B 留空
+  direct: true, // true = Mode B（每位用户在浏览器填写自己的 Ark key）；false = Mode A 代理
   llmKey: '',
   imageKey: '',
 }
@@ -68,6 +68,17 @@ export const useProject = create(
     }),
     {
       name: 'brand-visual:project',
+      version: 2,
+      migrate: (persisted, version) => {
+        if (version < 2 && persisted && persisted.apiConfig) {
+          const old = persisted.apiConfig
+          const wasLegacyText = old.textModel === 'qwen3.7-flash' || String(old.openAiBase || '').includes('maas.aliyuncs.com')
+          if (wasLegacyText) {
+            persisted.apiConfig = { ...old, ...DEFAULT_API, llmKey: '', imageKey: '' }
+          }
+        }
+        return persisted
+      },
       merge: (persisted, current) => ({
         ...current,
         ...persisted,
