@@ -2,7 +2,6 @@ import { useRef, useState } from 'react'
 import { useProject } from '../store'
 import { generateVisualBrief, parseBrandCoreFromText, pickCoreFields, BRIEF_SCHEMA } from '../services/llm'
 import { extractText } from '../services/documentText'
-import { fileToCompressedDataURL, MAX_PRODUCT_IMAGES } from '../services/productImages'
 import { Button, ErrorNote, Panel, ChipEditor, Labelled } from '../components/ui'
 
 const CORE_FIELDS = [
@@ -31,10 +30,6 @@ export default function Step1VisualBrief() {
   const [err, setErr] = useState(null)
   const fileRef = useRef(null)
   const [importState, setImportState] = useState(null) // { busy, ok, msg }
-  const productImages = useProject((s) => s.productImages)
-  const setProductImages = useProject((s) => s.setProductImages)
-  const [imgBusy, setImgBusy] = useState(false)
-  const imgRef = useRef(null)
 
   function patchCore(key, v) {
     setCore((c) => ({ ...c, [key]: v }))
@@ -100,34 +95,6 @@ export default function Step1VisualBrief() {
     }
   }
 
-  async function onAddProductImages(e) {
-    const files = Array.from(e.target.files || [])
-    e.target.value = ''
-    if (!files.length) return
-    const remaining = MAX_PRODUCT_IMAGES - productImages.length
-    if (remaining <= 0) return
-    setImgBusy(true)
-    const added = []
-    for (const f of files.slice(0, remaining)) {
-      try {
-        const dataUrl = await fileToCompressedDataURL(f)
-        added.push({
-          id: Math.random().toString(36).slice(2) + Date.now().toString(36),
-          name: f.name,
-          dataUrl,
-        })
-      } catch {
-        /* skip unreadable image */
-      }
-    }
-    setProductImages([...productImages, ...added].slice(0, MAX_PRODUCT_IMAGES))
-    setImgBusy(false)
-  }
-
-  function removeProductImage(id) {
-    setProductImages(productImages.filter((p) => p.id !== id))
-  }
-
   function approve() {
     if (!brief) return
     setBrandCore(core)
@@ -176,35 +143,6 @@ export default function Step1VisualBrief() {
             </Labelled>
           ))}
         </div>
-
-        <Labelled label={`Reference product image (${productImages.length}/${MAX_PRODUCT_IMAGES})`}>
-          <div className="chips">
-            {productImages.map((p) => (
-              <div key={p.id} className="prod-thumb">
-                <img src={p.dataUrl} alt="" title={p.name || 'product'} />
-                <button type="button" onClick={() => removeProductImage(p.id)}>×</button>
-              </div>
-            ))}
-            <Button
-              className="sm ghost"
-              disabled={imgBusy || productImages.length >= MAX_PRODUCT_IMAGES}
-              onClick={() => imgRef.current && imgRef.current.click()}
-            >
-              {imgBusy ? 'Processing…' : 'Upload product image'}
-            </Button>
-            <input
-              ref={imgRef}
-              type="file"
-              accept="image/*"
-              multiple
-              style={{ display: 'none' }}
-              onChange={onAddProductImages}
-            />
-          </div>
-        </Labelled>
-        <p className="hint" style={{ marginTop: -6 }}>
-          Optional. Upload one photo of the real product — it becomes the single image-to-image reference when generating Visual Directions in Step 2. The product stays recognizable while the scene is restyled.
-        </p>
 
         <div style={{ display: 'flex', gap: 8, justifyContent: 'flex-end', marginTop: 4 }}>
           <Button variant="primary" busy={busy} onClick={generate}>

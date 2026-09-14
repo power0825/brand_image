@@ -1,6 +1,6 @@
 /**
  * Product reference image: compressed to a localStorage-friendly data URL.
- * It is optional; when present, Step 2 uses this single photo as an
+ * It is required; Step 2 uses this single photo as an
  * image-to-image reference (doubao-seedream supports an `image` field).
  */
 

@@ -29,3 +29,10 @@ test('img2img prompt identifies the single attached product reference', () => {
   const prompts = fs.readFileSync(new URL('../src/prompts/imagePrompts.js', import.meta.url), 'utf8')
   assert.match(prompts, /only reference product image/i)
 })
+test('reference product upload lives on the Visual Directions step', () => {
+  const step1 = fs.readFileSync(new URL('../src/steps/Step1VisualBrief.jsx', import.meta.url), 'utf8')
+  const step2 = fs.readFileSync(new URL('../src/steps/Step2VisualDirections.jsx', import.meta.url), 'utf8')
+  assert.doesNotMatch(step1, /Reference product image/)
+  assert.match(step2, /ProductImageInput/)
+  assert.match(step2, /disabled=\{!visualBrief \|\| !productImages\.length\}/)
+})

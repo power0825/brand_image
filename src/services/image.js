@@ -53,15 +53,9 @@ async function generate(prompt, { size = DEFAULT_SIZE, image } = {}) {
 
 export async function directionImage(direction, brandCore) {
   const ref = useProject.getState().productImages?.[0]?.dataUrl
-  // 有唯一参考产品图：img2img，产品保持可辨，环境按方向重设；失败自动退回纯文生图
-  if (ref) {
-    try {
-      return await generate(buildDirectionImg2ImgPrompt(direction, brandCore), { image: ref })
-    } catch {
-      /* fall through to plain text2img so one reference-image problem never blocks a direction */
-    }
-  }
-  return generate(buildDirectionHeroPrompt(direction, brandCore))
+  if (!ref) throw new Error('Upload one reference product image before generating Visual Directions.')
+  // The single uploaded product image is always the image-to-image reference.
+  return generate(buildDirectionImg2ImgPrompt(direction, brandCore), { image: ref })
 }
 
 export function logoImage(concept, direction, brandName) {

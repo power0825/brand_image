@@ -2,13 +2,14 @@ import { useState } from 'react'
 import { useProject } from '../store'
 import { generateVisualDirections } from '../services/llm'
 import { directionImage } from '../services/image'
-import { Button, ErrorNote, Panel, ProductStrip } from '../components/ui'
+import { Button, ErrorNote, Panel, ProductImageInput } from '../components/ui'
 import DirectionCard from '../components/DirectionCard'
 
 export default function Step2VisualDirections() {
   const brandCore = useProject((s) => s.brandCore)
   const visualBrief = useProject((s) => s.visualBrief)
   const directions = useProject((s) => s.visualDirections)
+  const productImages = useProject((s) => s.productImages)
   const selected = useProject((s) => s.selectedDirection)
   const setDirections = useProject((s) => s.setDirections)
   const selectDirection = useProject((s) => s.selectDirection)
@@ -35,6 +36,10 @@ export default function Step2VisualDirections() {
   }
 
   async function generateAll() {
+    if (!useProject.getState().productImages?.length) {
+      setErr('Upload one reference product image before generating Visual Directions.')
+      return
+    }
     setBusy(true)
     setErr(null)
     try {
@@ -69,14 +74,17 @@ export default function Step2VisualDirections() {
             {directions.length > 0 && (
               <Button className="sm" onClick={() => setDirections([])}>Reset</Button>
             )}
-            <Button className="sm primary" busy={busy || genImg >= 0} onClick={generateAll} disabled={!visualBrief}>
+            <Button className="sm primary" busy={busy || genImg >= 0} onClick={generateAll} disabled={!visualBrief || !productImages.length}>
               {busy ? 'Generating…' : directions.length ? 'Regenerate 3 directions' : 'Generate 3 Visual Directions'}
             </Button>
           </>
         }
       >
         <ErrorNote>{err}</ErrorNote>
-        <ProductStrip />
+        <ProductImageInput />
+        {!productImages.length && (
+          <p className="hint required-note" style={{ marginTop: -6 }}>Upload one required product image before generating Visual Directions.</p>
+        )}
         {!directions.length ? (
           <div className="hint" style={{ padding: 30, textAlign: 'center' }}>
             {busy ? 'Exploring directions & rendering hero visuals…' : 'No directions yet.'}

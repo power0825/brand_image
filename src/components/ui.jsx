@@ -1,5 +1,6 @@
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import { useProject } from '../store'
+import { fileToCompressedDataURL, MAX_PRODUCT_IMAGES } from '../services/productImages'
 
 export function Spinner() {
   return <span className="spinner" aria-label="loading" />
@@ -142,6 +143,68 @@ export function ListBlock({ title, items, variant }) {
   )
 }
 
+/** Required single product reference image used by Step 2 image-to-image generation. */
+export function ProductImageInput() {
+  const productImages = useProject((s) => s.productImages)
+  const setProductImages = useProject((s) => s.setProductImages)
+  const imgRef = useRef(null)
+  const [imgBusy, setImgBusy] = useState(false)
+
+  async function onAddProductImage(e) {
+    const file = e.target.files && e.target.files[0]
+    e.target.value = ''
+    if (!file) return
+    setImgBusy(true)
+    try {
+      const dataUrl = await fileToCompressedDataURL(file)
+      setProductImages([{
+        id: Math.random().toString(36).slice(2) + Date.now().toString(36),
+        name: file.name,
+        dataUrl,
+      }])
+    } catch {
+      /* unreadable files are ignored; the required state remains visible */
+    } finally {
+      setImgBusy(false)
+    }
+  }
+
+  function removeProductImage(id) {
+    setProductImages(productImages.filter((p) => p.id !== id))
+  }
+
+  return (
+    <div className="reference-image-input">
+      <Labelled label={`Reference product image (required · ${productImages.length}/${MAX_PRODUCT_IMAGES})`}>
+        <div className="chips">
+          {productImages.slice(0, MAX_PRODUCT_IMAGES).map((p) => (
+            <div key={p.id} className="prod-thumb">
+              <img src={p.dataUrl} alt="" title={p.name || 'product'} />
+              <button type="button" onClick={() => removeProductImage(p.id)}>×</button>
+            </div>
+          ))}
+          <Button
+            className="sm ghost"
+            disabled={imgBusy}
+            onClick={() => imgRef.current && imgRef.current.click()}
+          >
+            {imgBusy ? 'Processing…' : productImages.length ? 'Replace product image' : 'Upload product image'}
+          </Button>
+          <input
+            ref={imgRef}
+            type="file"
+            accept="image/*"
+            style={{ display: 'none' }}
+            onChange={onAddProductImage}
+          />
+        </div>
+      </Labelled>
+      <p className="hint" style={{ marginTop: -6 }}>
+        Required. Upload one photo of the real product. Visual Directions use this single image-to-image reference so the product stays recognizable while the scene is restyled.
+      </p>
+    </div>
+  )
+}
 /** Small strip of uploaded reference-product photos, shown when any exist. */
 export function ProductStrip() {
   const productImages = useProject((s) => s.productImages)
