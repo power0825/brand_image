@@ -16,11 +16,13 @@ export default function App() {
   const importProject = useProject((s) => s.importProject)
 
   const [cfgOpen, setCfgOpen] = useState(false)
+  const [projectKey, setProjectKey] = useState(0)
   const fileRef = useRef(null)
 
   function newProject() {
     if (confirm('Start a new project? Approved steps and results will be cleared (connections are kept).')) {
       reset()
+      setProjectKey((key) => key + 1)
     }
   }
 
@@ -55,7 +57,7 @@ export default function App() {
       <Stepper />
 
       <main>
-        <Current />
+        <Current key={projectKey} />
       </main>
 
       <ApiConfigModal open={cfgOpen} onClose={() => setCfgOpen(false)} />

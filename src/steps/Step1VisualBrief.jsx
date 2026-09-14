@@ -225,14 +225,16 @@ export default function Step1VisualBrief() {
       {/* 下半区：Visual Brief 结果 —— 每字段独占一行 */}
       <Panel
         title="Visual Brief — result"
-        actions={
+        actions={brief && (
+          <Button className="sm" onClick={generate}>Regenerate</Button>
+        )}
+        footer={
           brief && (
-            <>
-              <Button className="sm" onClick={generate}>Regenerate</Button>
-              <Button className="sm primary" onClick={approve} disabled={!brief || !core.brandName}>
+            <div className="panel-footer-action">
+              <Button className="continue-btn" variant="primary" onClick={approve} disabled={!brief || !core.brandName}>
                 {approved ? 'Saved ✓' : 'Approve & continue →'}
               </Button>
-            </>
+            </div>
           )
         }
       >
