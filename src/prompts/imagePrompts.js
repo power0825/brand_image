@@ -42,12 +42,12 @@ export function buildDirectionHeroPrompt(direction, brandCore) {
 
 /**
  * Hero visual for one visual direction, when the user attached real product photos:
- * the model uses the attached product image as reference (image-to-image), keeps
+ * the model uses the single attached product image as reference (image-to-image), keeps
  * the product recognizable, and restyles the setting/lighting per the direction.
  */
 export function buildDirectionImg2ImgPrompt(direction, brandCore) {
   return [
-    'The attached image is the brand\'s actual product — use it as the product reference.',
+    'The attached image is the brand\'s actual product and the only reference product image — use this exact image as the product reference.',
     `Create a hero visual in the "${direction.name}" visual direction.`,
     `core idea: ${direction.coreIdea}.`,
     `mood: ${direction.mood}.`,

@@ -52,9 +52,8 @@ async function generate(prompt, { size = DEFAULT_SIZE, image } = {}) {
 }
 
 export async function directionImage(direction, brandCore) {
-  const imgs = useProject.getState().productImages || []
-  const ref = imgs[0] && imgs[0].dataUrl
-  // 有参考产品图：img2img，产品保持可辨，环境按方向重设；失败自动退回纯文生图
+  const ref = useProject.getState().productImages?.[0]?.dataUrl
+  // 有唯一参考产品图：img2img，产品保持可辨，环境按方向重设；失败自动退回纯文生图
   if (ref) {
     try {
       return await generate(buildDirectionImg2ImgPrompt(direction, brandCore), { image: ref })

@@ -20,3 +20,12 @@ test('Visual Brief approval action is rendered in the panel footer', () => {
   assert.match(brief, /footer=\{/)
   assert.match(brief, /continue-btn/)
 })
+test('only one reference product image is allowed', () => {
+  const productImages = fs.readFileSync(new URL('../src/services/productImages.js', import.meta.url), 'utf8')
+  assert.match(productImages, /MAX_PRODUCT_IMAGES\s*=\s*1/)
+})
+
+test('img2img prompt identifies the single attached product reference', () => {
+  const prompts = fs.readFileSync(new URL('../src/prompts/imagePrompts.js', import.meta.url), 'utf8')
+  assert.match(prompts, /only reference product image/i)
+})

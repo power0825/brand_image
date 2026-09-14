@@ -148,7 +148,7 @@ export function ProductStrip() {
   if (!productImages || !productImages.length) return null
   return (
     <div style={{ display: 'flex', gap: 8, alignItems: 'center', margin: '2px 0 12px', flexWrap: 'wrap' }}>
-      <span className="hint" style={{ fontWeight: 700 }}>Reference product:</span>
+      <span className="hint" style={{ fontWeight: 700 }}>Reference product image:</span>
       {productImages.map((p) => (
         <img
           key={p.id}

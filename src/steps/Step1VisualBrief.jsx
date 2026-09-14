@@ -177,7 +177,7 @@ export default function Step1VisualBrief() {
           ))}
         </div>
 
-        <Labelled label={`Reference product images (${productImages.length}/${MAX_PRODUCT_IMAGES})`}>
+        <Labelled label={`Reference product image (${productImages.length}/${MAX_PRODUCT_IMAGES})`}>
           <div className="chips">
             {productImages.map((p) => (
               <div key={p.id} className="prod-thumb">
@@ -190,7 +190,7 @@ export default function Step1VisualBrief() {
               disabled={imgBusy || productImages.length >= MAX_PRODUCT_IMAGES}
               onClick={() => imgRef.current && imgRef.current.click()}
             >
-              {imgBusy ? 'Processing…' : 'Upload product images'}
+              {imgBusy ? 'Processing…' : 'Upload product image'}
             </Button>
             <input
               ref={imgRef}
@@ -203,8 +203,7 @@ export default function Step1VisualBrief() {
           </div>
         </Labelled>
         <p className="hint" style={{ marginTop: -6 }}>
-          Optional. Up to {MAX_PRODUCT_IMAGES} photos of the real product — used as an image-to-image reference when
-          generating the Visual Directions in Step 2 (keeps the product recognizable, restyles the scene). Not required.
+          Optional. Upload one photo of the real product — it becomes the single image-to-image reference when generating Visual Directions in Step 2. The product stays recognizable while the scene is restyled.
         </p>
 
         <div style={{ display: 'flex', gap: 8, justifyContent: 'flex-end', marginTop: 4 }}>

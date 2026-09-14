@@ -68,7 +68,7 @@ export const useProject = create(
     }),
     {
       name: 'brand-visual:project',
-      version: 2,
+      version: 3,
       migrate: (persisted, version) => {
         if (version < 2 && persisted && persisted.apiConfig) {
           const old = persisted.apiConfig
@@ -76,6 +76,9 @@ export const useProject = create(
           if (wasLegacyText) {
             persisted.apiConfig = { ...old, ...DEFAULT_API, llmKey: '', imageKey: '' }
           }
+        }
+        if (version < 3 && persisted) {
+          persisted.productImages = Array.isArray(persisted.productImages) ? persisted.productImages.slice(0, 1) : []
         }
         return persisted
       },

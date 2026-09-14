@@ -1,6 +1,6 @@
 /**
- * Product reference images: compressed to localStorage-friendly data URLs.
- * They are optional; when present, Step 2 uses the first photo as an
+ * Product reference image: compressed to a localStorage-friendly data URL.
+ * It is optional; when present, Step 2 uses this single photo as an
  * image-to-image reference (doubao-seedream supports an `image` field).
  */
 
@@ -37,4 +37,4 @@ export function fileToCompressedDataURL(file, maxDim = 1024, quality = 0.82) {
   })
 }
 
-export const MAX_PRODUCT_IMAGES = 5
+export const MAX_PRODUCT_IMAGES = 1
