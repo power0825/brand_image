@@ -45,7 +45,7 @@ export const useProject = create(
 
       setApiConfig: (patch) => set((s) => ({ apiConfig: { ...s.apiConfig, ...patch } })),
       setBrandCore: (patch) => set((s) => ({ brandCore: { ...s.brandCore, ...patch } })),
-      setProductImages: (list) => set({ productImages: list }),
+      setProductImages: (list) => set({ productImages: Array.isArray(list) ? list.slice(0, 1) : [] }),
       setVisualBrief: (brief) => set({ visualBrief: brief }),
       approveBrief: () => set((s) => ({ approved: { ...s.approved, brief: true }, step: 1 })),
       setDirections: (list) => set({ visualDirections: list }),
@@ -61,6 +61,7 @@ export const useProject = create(
         set({
           ...emptyProject(),
           ...obj,
+          productImages: Array.isArray(obj && obj.productImages) ? obj.productImages.slice(0, 1) : [],
           apiConfig: { ...DEFAULT_API, ...(obj && obj.apiConfig ? obj.apiConfig : {}) },
           approved: obj && obj.approved ? { ...emptyProject().approved, ...obj.approved } : emptyProject().approved,
         }),
